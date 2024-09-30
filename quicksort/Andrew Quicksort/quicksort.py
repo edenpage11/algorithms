@@ -1,5 +1,6 @@
 import sys
 import copy
+import random
 
 def pivotStart(A, start, end):
     return start
@@ -13,6 +14,13 @@ def pivotMedian(A, start, end):
     pivselect.sort(key=lambda x: x[0])
     return pivselect[1][1]
 
+def pivotRandom(A, start, end):
+    rand1 = random.randint(start, end)
+    rand2 = random.randint(start, end)
+    rand3 = random.randint(start, end)
+    pivselect = [(A[rand1], rand1), (A[rand2], rand2), (A[rand3], rand3)]
+    pivselect.sort(key=lambda x: x[0])
+    return pivselect[1][1]
 
 def partition(A, start, end):
     p = A[start]
@@ -20,13 +28,10 @@ def partition(A, start, end):
     comparisons = 0
     for j in range(start + 1, end + 1):
         if A[j] < p:
-            temp = A[j]
-            A[j] = A[i]
-            A[i] = temp
+            A[i], A[j] = A[j], A[i]
             i += 1
         comparisons += 1
-    A[start] = A[i-1]
-    A[i-1] = p
+    A[start], A[i-1] = A[i-1], A[start]
     return i - 1, comparisons
 
 def qksrt(A, pivFunc, start = 0, end = None, comparisons = 0):
@@ -35,9 +40,7 @@ def qksrt(A, pivFunc, start = 0, end = None, comparisons = 0):
     if start >= end:
         return comparisons # base case
     piv = pivFunc(A, start, end)
-    tempStart = A[start]
-    A[start] = A[piv]
-    A[piv] = tempStart
+    A[start], A[piv] = A[piv], A[start]
     j, tempcomparisons = partition(A, start, end)
     comparisons += tempcomparisons
     tempcomparisons = qksrt(A,pivFunc, start, j - 1)
@@ -73,6 +76,13 @@ def main():
     A = copy.deepcopy(copyA)
     comparisons = qksrt(A, pivotMedian)
     print(f"Median pivot comparisons: {comparisons}")
+    A = copy.deepcopy(copyA)
+    fullcomparisons = 0
+    n = 10
+    for _ in range(n):
+        fullcomparisons += qksrt(A, pivotRandom)
+    comparisons = fullcomparisons//n
+    print(f"Random pivot comparisons: {comparisons}")
 
 if __name__ == "__main__":
     main()
