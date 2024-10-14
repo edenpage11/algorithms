@@ -5,13 +5,13 @@ def get_edges(file):
     with open(file, "r") as f:
         for line in f:
             if line[0] in G.keys():
-                G[line[0]] += [line[2]]
+                G[int(line[0])] += [int(line[2])]
             else: 
-                G[line[0]] = [line[2]]
+                G[int(line[0])] = [int(line[2])]
             if line[2] in G_rev.keys():
-                G_rev[line[2]] += [line[0]]
+                G_rev[int(line[2])] += [int(line[0])]
             else: 
-                G_rev[line[2]] = [line[0]]
+                G_rev[int(line[2])] = [int(line[0])]
 
     return G, G_rev
 
