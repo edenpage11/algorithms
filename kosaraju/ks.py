@@ -13,6 +13,6 @@ def get_edges(file):
             else: 
                 G_rev[line[2]] = [line[0]]
 
-    print(G, G_rev)
+    return G, G_rev
 
-get_edges("kosaraju\ex8.txt")
+print(get_edges("kosaraju\ex8.txt"))
