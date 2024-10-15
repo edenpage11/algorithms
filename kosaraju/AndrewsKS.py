@@ -86,8 +86,6 @@ def main():
                 noOutgoing.append(value)
     for value in noOutgoing:
         G_rev[value] = None
-    print(G)
-    print(G_rev)
     print(Kosaraju(G, G_rev))
 
 if __name__ == "__main__":
