@@ -1,5 +1,6 @@
 numSCC = 0
-
+import time
+import sys
 ## read in files and store edges as dictionary
 def get_edges(file):
     G = {}
@@ -71,21 +72,40 @@ def Kosaraju(G, G_rev):
     return numSCC, fiveSCC
 
 def main():
+    sys.setrecursionlimit(10000000)
     G, G_rev = get_edges("problem8.10.txt")
     noOutgoing = []
+    # Assuming G and G_rev are your dictionaries
+    noOutgoing = set()
+
+    # Using a set for O(1) lookups
+    G_keys_set = set(G.keys())
+    G_rev_keys_set = set(G_rev.keys())
+
+    # First loop for G
     for values in G.values():
         for value in values:
-            if value not in G.keys() and value not in noOutgoing:
-                noOutgoing.append(value)
+            # Check using the set instead of the keys method
+            if value not in G_keys_set and value not in noOutgoing:
+                noOutgoing.add(value)
+
+    # Set the values in G
     for value in noOutgoing:
-        G[value] = None
-    noOutgoing = []
+        G.setdefault(value, None)
+
+    # Clear noOutgoing set for the next use
+    noOutgoing.clear()
+
+    # Second loop for G_rev
     for values in G_rev.values():
         for value in values:
-            if value not in G_rev.keys() and value not in noOutgoing:
-                noOutgoing.append(value)
+            # Check using the set instead of the keys method
+            if value not in G_rev_keys_set and value not in noOutgoing:
+                noOutgoing.add(value)
+
+    # Set the values in G_rev
     for value in noOutgoing:
-        G_rev[value] = None
+        G_rev.setdefault(value, None)
     print(Kosaraju(G, G_rev))
 
 if __name__ == "__main__":
