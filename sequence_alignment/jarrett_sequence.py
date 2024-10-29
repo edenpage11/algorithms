@@ -43,9 +43,11 @@ def generate_matrix(string1, string2):
 def base_case(matrix, gap_cost):
     n, m, z = matrix.shape
     for i in range(1, n):
-        matrix[i, 0] = gap_cost * i
+        matrix[i, 0, 0] = gap_cost * i
+        matrix[i, 0, 1] = 2
     for j in range(1, m):
-        matrix[0, j] = gap_cost * j
+        matrix[0, j, 0] = gap_cost * j
+        matrix[0, j, 1] = 3
     return matrix
 
 
@@ -75,14 +77,43 @@ def get_penalty(solved_matrix):
     return solved_matrix[-1, -1, 0]
 
 
+def reconstruction(matrix, string1, string2):
+    i = len(string1)
+    j = len(string2)
+    finalstring1 = ""
+    finalstring2 = ""
+    while (j > 0 or i > 0):
+        match matrix[i, j, 1]:
+            case 1:
+                # Case 1: Diagonal move (match/mismatch)
+                finalstring1 = string1[i - 1] + finalstring1
+                finalstring2 = string2[j - 1] + finalstring2
+                i -= 1
+                j -= 1
+            case 2:
+                # Case 2: Upward move (gap in string2)
+                finalstring1 = string1[i - 1] + finalstring1
+                finalstring2 = "-" + finalstring2
+                i -= 1
+            case 3:
+                # Case 3: Leftward move (gap in string1)
+                finalstring1 = "-" + finalstring1
+                finalstring2 = string2[j - 1] + finalstring2
+                j -= 1
+    return finalstring1, finalstring2
+
+
 def main():
     gap_cost, mismatch_cost, string1, string2 = import_text(
-        r"C:\Users\jarre\Documents\School\Fall 2024\Analysis of Algorithms\sequence\problem17.8nw.txt")
+        "problem17.8nw.txt")
     matrix = generate_matrix(string1, string2)
     matrix = base_case(matrix, int(gap_cost))
     fill_matrix(matrix, string1, string2, int(mismatch_cost), int(gap_cost))
     penalty = get_penalty(matrix)
     print(penalty)
+    str1, str2 = reconstruction(matrix, string1, string2)
+    print(str1)
+    print(str2)
 
 
 if __name__ == "__main__":
