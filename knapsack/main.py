@@ -42,10 +42,31 @@ def optimism(node):
 
     return current_value
 
+
+def is_subtree_worse(node) -> bool:
+    '''
+    Check if the node's optimistic estimate is better than the best solution found so far.
+    return True if the node's subtree is not worth exploring, 
+
+    Return False if you should push the current node's children onto the stack:
+        push 'no' child first, then push 'yes' child (so that 'yes' child is popped first)
+    '''
+    # call this function when visiting a node
+    global BEST_REAL_VALUE
+    if optimism(node) < BEST_REAL_VALUE:
+        return True
+    else:
+        return False
+
+
 def main():
+    # TODO: put this at very top of file
     filename = "problem16.7test.txt"
-    capacity, depth, itemList = read_file(filename)
-    dfs(itemList)
+    # Global variables:
+    CAPACITY, DEPTH, ITEMLIST = read_file(filename)
+    BEST_REAL_VALUE = 0
+    dfs(ITEMLIST)
+
 
 if __name__ == '__main__':
     main()
