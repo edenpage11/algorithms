@@ -14,8 +14,8 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
-def dfs(itemList):
-    rootNode = Node(itemList[0])
+def dfs(itemList, capacity, depth):
+    rootNode = Node(itemList[0], capacity)
     stack = [rootNode]
     while stack:
         curNode = stack.pop()
@@ -65,7 +65,7 @@ def main():
     # Global variables:
     CAPACITY, DEPTH, ITEMLIST = read_file(filename)
     BEST_REAL_VALUE = 0
-    dfs(ITEMLIST)
+    dfs(ITEMLIST, CAPACITY, DEPTH)
 
 
 if __name__ == '__main__':
