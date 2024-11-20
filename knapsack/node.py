@@ -27,5 +27,6 @@ class Node():
         self.yes = Node(items[self.item.level + 1])
         self.no = Node(items[self.item.level + 1])
         print("created children", self.yes, self.no)
+        return
 
 
