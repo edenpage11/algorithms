@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 
-
 # instantiate with Item(value = , weight = )
 # update level with itemInstance.level = index
 @dataclass
@@ -11,28 +10,41 @@ class Item:
 
 
 class Node():
-    def __init__(self, item, capacity, parent = None):
+    def __init__(self, item, is_subtree_worse_function, parent = None, capacity = 0):
         self.parent = parent
         self.item = item
-        self.max_included = -1
-        self.max_excluded = -1
-        self.yes = None
-        self.no = None
-        self.capacity = 0
-        self.cur_value = 0
+        if parent:
+            self.capacity = parent.capacity
+        else:
+            self.capacity = capacity
+        self.cur_value = 0 if parent is None else parent.cur_value
+        if parent and parent.yes == self:  # If this is the "yes" branch
+            self.cur_value += parent.item.value
+            self.capacity -= parent.item.weight
+        self.level = item.level
+        self.is_subtree_worse = is_subtree_worse_function
 
     def visit(self, stack, items):
+        global BEST_REAL_VALUE
+
+        self.yes = None
+
+        # leaf node base case
         if self.item.level == len(items) - 1:
-            # leaf node
+            if self.cur_value > BEST_REAL_VALUE:
+                BEST_REAL_VALUE = self.cur_value
             return
-        if self.item.weight > self.capacity:
-            #todo don't add the yes side
-            pass
-        # create 2 new child nodes of next item type
-        self.yes = Node(items[self.item.level + 1], self.capacity - self.item.weight, self)
-        self.no = Node(items[self.item.level + 1], self.capacity, self)
-        stack.append(self.no)
-        stack.append(self.yes)
+        
+        # If the item's weight exceeds the remaining capacity, skip the "yes" branch
+        if self.item.weight <= self.capacity:
+            self.yes = Node(items[self.level + 1], self.is_subtree_worse, parent = self)
+
+        self.no = Node(items[self.level + 1], self.is_subtree_worse, parent = self)
+        if not self.is_subtree_worse(self.no):
+            stack.append(self.no)
+        if self.yes:
+            if not self.is_subtree_worse(self.yes):
+                stack.append(self.yes)
         return
 
 

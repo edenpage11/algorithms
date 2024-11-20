@@ -1,6 +1,52 @@
-from node import Item, Node
+from dataclasses import dataclass, field
 
+# instantiate with Item(value = , weight = )
+# update level with itemInstance.level = index
+@dataclass
+class Item:
+    value: int
+    weight: int
+    level: int = field(default=-1)
 
+class Node():
+    def __init__(self, item, parent = None, capacity = 0):
+        self.parent = parent
+        self.item = item
+        if parent:
+            self.capacity = parent.capacity
+        else:
+            self.capacity = capacity
+        self.cur_value = 0 if parent is None else parent.cur_value
+        if parent and parent.yes == self:  # If this is the "yes" branch
+            self.cur_value += parent.item.value
+            self.capacity -= parent.item.weight
+        self.level = item.level
+
+    def visit(self, stack, items):
+        global BEST_REAL_VALUE
+
+        self.yes = None
+        
+        print("visit", self, BEST_REAL_VALUE)
+
+        # leaf node base case
+        if self.item.level == len(items) - 1:
+            if self.cur_value > BEST_REAL_VALUE:
+                BEST_REAL_VALUE = self.cur_value
+            return
+        
+        # If the item's weight exceeds the remaining capacity, skip the "yes" branch
+        if self.item.weight <= self.capacity:
+            self.yes = Node(items[self.level + 1], parent = self)
+
+        self.no = Node(items[self.level + 1], parent = self)
+        if not is_subtree_worse(self.no):
+            stack.append(self.no)
+        if self.yes:
+            if not is_subtree_worse(self.yes):
+                stack.append(self.yes)
+        return
+    
 def read_file(filename):
     with open(filename, 'r') as f:
         firstline = f.readline()
@@ -22,9 +68,8 @@ filename = "problem16.7test.txt"
 CAPACITY, DEPTH, ITEMLIST = read_file(filename)
 BEST_REAL_VALUE = 0
 
-
 def dfs(itemList, capacity, depth):
-    rootNode = Node(itemList[0], is_subtree_worse, capacity = capacity)
+    rootNode = Node(itemList[0], capacity = capacity)
     stack = [rootNode]
     while stack:
         curNode = stack.pop()
