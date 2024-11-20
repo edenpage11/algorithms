@@ -11,7 +11,8 @@ class Item:
 
 
 class Node():
-    def __init__(self, item):
+    def __init__(self, item, parent = None):
+        self.parent = parent
         self.item = item
         self.max_included = -1
         self.max_excluded = -1
@@ -26,8 +27,8 @@ class Node():
             print("reached leaf", self.item)
             return
         # create 2 new child nodes of next item type
-        self.yes = Node(items[self.item.level + 1])
-        self.no = Node(items[self.item.level + 1])
+        self.yes = Node(items[self.item.level + 1], self)
+        self.no = Node(items[self.item.level + 1], self)
         print("created children", self.yes, self.no)
         return
 

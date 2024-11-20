@@ -16,6 +16,10 @@ def read_file(filename):
     return capacity, depth, itemList
 
 
+def dfs(rootNode):
+    ...
+
+
 def optimism(node):
     '''Calculate the optimistic estimate of the value of a node's subtree.'''
 
