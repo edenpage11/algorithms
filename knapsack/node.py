@@ -26,7 +26,7 @@ class Node():
             # leaf node
             print("reached leaf", self.item)
             return
-        if self.item.size > self.capacity:
+        if self.item.weight > self.capacity:
             #todo don't add the yes side
             pass
         # create 2 new child nodes of next item type
