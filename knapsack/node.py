@@ -13,4 +13,9 @@ class Item:
 class Node():
     def __init__(self, item):
         self.item = item
+        self.max_included = -1
+        self.max_excluded = -1
+        self.yes = None
+        self.no = None
         
+
