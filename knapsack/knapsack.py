@@ -9,13 +9,13 @@ class Item:
     level: int = field(default=-1)
 
 class Node():
-    def __init__(self, item, parent = None, capacity = 0, yes = False):
+    def __init__(self, item, parent = None, capacity = 0, am_i_yes = False):
         self.parent = parent
         self.item = item
         if parent:
             self.capacity = parent.capacity
             self.cur_value = parent.cur_value
-            if yes:
+            if am_i_yes:
                 self.cur_value += parent.item.value
                 self.capacity -= parent.item.weight
         else:
@@ -24,19 +24,19 @@ class Node():
         self.level = item.level
 
     def visit(self, stack, items):
-        global BEST_REAL_VALUE
+        global best_real_value
 
         self.yes = None
 
         # leaf node base case
-        if self.item.level == DEPTH - 1:
-            if self.cur_value > BEST_REAL_VALUE:
-                BEST_REAL_VALUE = self.cur_value
+        if self.level == DEPTH - 1:
+            if self.cur_value > best_real_value:
+                best_real_value = self.cur_value
             return
         
         # If the item's weight exceeds the remaining capacity, skip the "yes" branch
         if self.item.weight <= self.capacity:
-            self.yes = Node(items[self.level + 1], parent = self, yes = True)
+            self.yes = Node(items[self.level + 1], parent = self, am_i_yes = True)
 
         self.no = Node(items[self.level + 1], parent = self)
         if not is_subtree_worse(self.no):
@@ -62,10 +62,10 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
-filename = "problem16.7.txt"
+filename = "problem16.7test.txt"
 # Global variables:
 CAPACITY, DEPTH, itemList = read_file(filename)
-BEST_REAL_VALUE = 0
+best_real_value = 0
 
 
 def dfs(itemList, capacity, depth):
@@ -111,8 +111,8 @@ def is_subtree_worse(node) -> bool:
         push 'no' child first, then push 'yes' child (so that 'yes' child is popped first)
     '''
     # call this function when visiting a node
-    global BEST_REAL_VALUE
-    if optimism(node) < BEST_REAL_VALUE:
+    global best_real_value
+    if optimism(node) < best_real_value:
         return True
     else:
         return False
@@ -121,7 +121,7 @@ def main():
     exist, visited = dfs(itemList, CAPACITY, DEPTH)
     print(f"{exist} total nodes exist on the branch tree")
     print(f"With our bounds, only {visited} nodes were visited")
-    print(f"The approximation of the best possible value you could get in the knapsack was: {BEST_REAL_VALUE}")
+    print(f"The approximation of the best possible value you could get in the knapsack was: {best_real_value}")
 
 
 if __name__ == '__main__':
