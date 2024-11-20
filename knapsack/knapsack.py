@@ -9,35 +9,34 @@ class Item:
     level: int = field(default=-1)
 
 class Node():
-    def __init__(self, item, parent = None, capacity = 0):
+    def __init__(self, item, parent = None, capacity = 0, yes = False):
         self.parent = parent
         self.item = item
         if parent:
             self.capacity = parent.capacity
+            self.cur_value = parent.cur_value
+            if yes:
+                self.cur_value += parent.item.value
+                self.capacity -= parent.item.weight
         else:
             self.capacity = capacity
-        self.cur_value = 0 if parent is None else parent.cur_value
-        if parent and parent.yes == self:  # If this is the "yes" branch
-            self.cur_value += parent.item.value
-            self.capacity -= parent.item.weight
+            self.cur_value = 0
         self.level = item.level
 
     def visit(self, stack, items):
         global BEST_REAL_VALUE
 
         self.yes = None
-        
-        print("visit", self, BEST_REAL_VALUE)
 
         # leaf node base case
-        if self.item.level == len(items) - 1:
+        if self.item.level == DEPTH - 1:
             if self.cur_value > BEST_REAL_VALUE:
                 BEST_REAL_VALUE = self.cur_value
             return
         
         # If the item's weight exceeds the remaining capacity, skip the "yes" branch
         if self.item.weight <= self.capacity:
-            self.yes = Node(items[self.level + 1], parent = self)
+            self.yes = Node(items[self.level + 1], parent = self, yes = True)
 
         self.no = Node(items[self.level + 1], parent = self)
         if not is_subtree_worse(self.no):
@@ -63,17 +62,23 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
-filename = "problem16.7test.txt"
+filename = "problem16.7.txt"
 # Global variables:
-CAPACITY, DEPTH, ITEMLIST = read_file(filename)
+CAPACITY, DEPTH, itemList = read_file(filename)
 BEST_REAL_VALUE = 0
 
+
 def dfs(itemList, capacity, depth):
+    NODES_EXIST = 2**DEPTH - 1
+    nodes_visited = 0
     rootNode = Node(itemList[0], capacity = capacity)
     stack = [rootNode]
     while stack:
         curNode = stack.pop()
         curNode.visit(stack, itemList)
+        nodes_visited += 1
+
+    return NODES_EXIST, nodes_visited
 
 
 def optimism(node):
@@ -81,7 +86,7 @@ def optimism(node):
 
     # The items that have not yet been considered (i.e. the items that are below the current node in the tree)
     # itemList is a global variable that contains a sorted list of all item objects
-    avalaible_items = ITEMLIST[node.level:]
+    avalaible_items = itemList[node.level:]
     capacity = node.capacity
     current_value = node.cur_value
 
@@ -113,8 +118,10 @@ def is_subtree_worse(node) -> bool:
         return False
 
 def main():
-    # TODO: put this at very top of file
-    dfs(ITEMLIST, CAPACITY, DEPTH)
+    exist, visited = dfs(itemList, CAPACITY, DEPTH)
+    print(f"{exist} total nodes exist on the branch tree")
+    print(f"With our bounds, only {visited} nodes were visited")
+    print(f"The approximation of the best possible value you could get in the knapsack was: {BEST_REAL_VALUE}")
 
 
 if __name__ == '__main__':
