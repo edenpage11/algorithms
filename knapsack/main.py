@@ -13,6 +13,9 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
+def dfs(rootNode):
+    ...
+
 def main():
     filename = "problem16.7test.txt"
     capacity, depth, itemList = read_file(filename)
