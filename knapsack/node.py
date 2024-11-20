@@ -31,8 +31,8 @@ class Node():
         # create 2 new child nodes of next item type
         self.yes = Node(items[self.item.level + 1], self.capacity - self.item.weight, self)
         self.no = Node(items[self.item.level + 1], self.capacity, self)
-        stack.append(self.yes)
         stack.append(self.no)
+        stack.append(self.yes)
         return
 
 
