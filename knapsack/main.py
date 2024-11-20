@@ -1,6 +1,5 @@
 from node import Item, Node
 
-
 def read_file(filename):
     with open(filename, 'r') as f:
         firstline = f.readline()
@@ -15,8 +14,13 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
-def dfs(rootNode):
-    ...
+def dfs(itemList):
+    rootNode = Node(itemList[0])
+    stack = [rootNode]
+    while stack:
+        curNode = stack.pop()
+        curNode.visit(itemList, stack)
+
 
 def optimism(node):
     '''Calculate the optimistic estimate of the value of a node's subtree.'''
@@ -41,7 +45,7 @@ def optimism(node):
 def main():
     filename = "problem16.7test.txt"
     capacity, depth, itemList = read_file(filename)
-
+    dfs(itemList)
 
 if __name__ == '__main__':
     main()
