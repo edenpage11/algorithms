@@ -17,8 +17,10 @@ class Node():
         self.max_excluded = -1
         self.yes = None
         self.no = None
+        self.capacity = 0
+        self.cur_value = 0
 
-    def visit(self, stack, items):
+    def visit(self, items):
         if self.item.level == len(items) - 1:
             # leaf node
             print("reached leaf", self.item)
