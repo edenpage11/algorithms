@@ -19,7 +19,7 @@ def dfs(itemList):
     stack = [rootNode]
     while stack:
         curNode = stack.pop()
-        curNode.visit(itemList, stack)
+        curNode.visit(stack, itemList)
 
 
 def optimism(node):
