@@ -24,15 +24,13 @@ class Node():
     def visit(self, stack, items):
         if self.item.level == len(items) - 1:
             # leaf node
-            print("reached leaf", self.item)
             return
         if self.item.weight > self.capacity:
             #todo don't add the yes side
             pass
         # create 2 new child nodes of next item type
-        self.yes = Node(items[self.item.level + 1], self.capacity - self.item.size, self)
+        self.yes = Node(items[self.item.level + 1], self.capacity - self.item.weight, self)
         self.no = Node(items[self.item.level + 1], self.capacity, self)
-        print("created children", self.yes, self.no)
         stack.append(self.yes)
         stack.append(self.no)
         return
