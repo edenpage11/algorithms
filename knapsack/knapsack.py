@@ -62,7 +62,7 @@ def read_file(filename):
             itemList[i].level = i
     return capacity, depth, itemList
 
-filename = "problem16.7test.txt"
+filename = "problem16.7.txt"
 # Global variables:
 CAPACITY, DEPTH, itemList = read_file(filename)
 best_real_value = 0
@@ -121,7 +121,7 @@ def main():
     exist, visited = dfs(itemList, CAPACITY, DEPTH)
     print(f"{exist} total nodes exist on the branch tree")
     print(f"With our bounds, only {visited} nodes were visited")
-    print(f"The approximation of the best possible value you could get in the knapsack was: {best_real_value}")
+    print(f"The optimal value you could get in the knapsack was: {best_real_value}")
 
 
 if __name__ == '__main__':
